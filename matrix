@@ -1,0 +1,2 @@
+#!/bin/sh
+curl -s https://gist.githubusercontent.com/alexfornuto/f2f6ffa423bd5bc21c5e/raw/matrix.sh | bash

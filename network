@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Get the local IP address
+ip_address=$(ipconfig getifaddr en0)
+
+# Extract the subnet from the IP address
+subnet=$(echo "$ip_address" | cut -d'.' -f1,2,3)
+
+# Perform an ARP scan within the local subnet
+arp -a | grep -v "(incomplete)" | while read -r line
+do
+    # Extract the IP address and MAC address
+    ip_mac=$(echo "$line" | awk '{print $2, $4}')
+
+    # Print device information
+    echo "IP Address: $(echo $ip_mac | awk '{print $1}')"
+    echo "MAC Address: $(echo $ip_mac | awk '{print $2}')"
+    echo ""
+done
