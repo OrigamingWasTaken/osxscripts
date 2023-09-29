@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Check if the user provided a directory as an argument
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 <directory>"
+  exit 1
+fi
+
+directory="$1"
+
+# Check if the directory exists
+if [ ! -d "$directory" ]; then
+  echo "Error: Directory '$directory' does not exist."
+  exit 1
+fi
+
+# Find and delete .DS_Store files using the -exec option
+found=false
+find "$directory" -type f -name .DS_Store -exec rm -f {} \; -exec echo "$(tput setaf 2)Deleted: {}$(tput sgr0)" \; -exec true \; 2>/dev/null || found=true
+
+if [ "$found" = false ]; then
+  echo "$(tput setaf 1)No .DS_Store files found.$(tput sgr0)"
+else
+  echo "Finished deleting .DS_Store files."
+fi

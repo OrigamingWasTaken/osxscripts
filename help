@@ -6,6 +6,7 @@ command_list=(
   "finder: Open a bunch of finder windows."
   "matrix: Create a matrix-style effect in the terminal."
   "network: Shows a list of every device on your network."
+  "removeds: Recursively remove .DS_Store files in a directory."
 )
 
 # Function to display the command list
