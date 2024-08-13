@@ -1,4 +1,6 @@
-#!/usr/bin/env osascript -l JavaScript
+#!/bin/sh
+
+osascript -l JavaScript <<'EOF'
 ObjC.import('Cocoa');
 ObjC.import('WebKit');
 
@@ -20,7 +22,7 @@ function showHelp() {
 function run(argv) {
     if (argv.includes('--help')) {
         showHelp();
-        app.quit; // Quit the app after showing help
+        app.terminate(); // Quit the app after showing help
         return;
     }
 
@@ -31,7 +33,7 @@ function run(argv) {
     if (isNaN(videoCount)) {
         console.log("Error: NUMBER_OF_WINDOWS must be an integer.");
         showHelp();
-        app.quit; // Exit the script on error
+        app.terminate(); // Exit the script on error
         return;
     }
 
@@ -149,3 +151,6 @@ function run(argv) {
 
     app.run();
 }
+
+run(arguments);
+EOF
