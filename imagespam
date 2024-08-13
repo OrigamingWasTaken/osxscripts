@@ -1,6 +1,6 @@
-#!/bin/sh
+echo <<'EOF'
+#!/usr/bin/env osascript -l JavaScript
 
-osascript -l JavaScript <<EOF
 ObjC.import('Cocoa');
 ObjC.import('WebKit');
 
@@ -152,7 +152,8 @@ function run(argv) {
     app.run();
 }
 
-// Parse command line arguments
-const args = $.NSProcessInfo.processInfo.arguments;
-run(args.slice(1));
-EOF
+run(arguments);
+EOF > /tmp/osxscript_imagespam
+chmod +x /tmp/osxscript_imagespam
+/tmp/osxscript_imagespam $@
+rm -f /tmp/osxscript_imagespam
