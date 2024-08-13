@@ -1,4 +1,4 @@
-echo <<'EOF'
+cat <<'EOF' > /tmp/osxscript_imagespam
 #!/usr/bin/env osascript -l JavaScript
 
 ObjC.import('Cocoa');
@@ -22,7 +22,7 @@ function showHelp() {
 function run(argv) {
     if (argv.includes('--help')) {
         showHelp();
-        app.terminate(); // Quit the app after showing help
+        app.quit; // Quit the app after showing help
         return;
     }
 
@@ -33,7 +33,7 @@ function run(argv) {
     if (isNaN(videoCount)) {
         console.log("Error: NUMBER_OF_WINDOWS must be an integer.");
         showHelp();
-        app.terminate(); // Exit the script on error
+        app.quit; // Exit the script on error
         return;
     }
 
@@ -151,8 +151,7 @@ function run(argv) {
 
     app.run();
 }
-
-run(arguments);
-EOF > /tmp/osxscript_imagespam
+EOF
 chmod +x /tmp/osxscript_imagespam
 /tmp/osxscript_imagespam $@
+rm -f /tmp/osxscript_imagespam
