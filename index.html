@@ -2,46 +2,47 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>OSXScripts</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/public/favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>OSXScripts</title>
 </head>
 
 <body>
-    <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-        OSXScripts
-      </h1>
-      <p class="leading-7 [&:not(:first-child)]:mt-6">
-        Welcome to this little repo of Mac scripts you can easily use in the terminal!
-      </p>
-      <h2 class="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        How to use
-      </h2>
-      <p class="leading-7 [&:not(:first-child)]:mt-6">
-        To use these scripts, you will need 
-        <a
-          href="#"
-          class="font-medium text-primary underline underline-offset-4"
-        >
-          curl and sh
-        </a>
-        . Here is an exemple:
-      </p>
-      <blockquote class="mt-6 border-l-2 pl-6 italic">
-        $ curl https://s.origaming.sh/finder | sh -s 10 5
-      </blockquote>
-      <p class="leading-7 [&:not(:first-child)]:mt-6">
-       This will create 10 finder windows and delete them after 5 seconds. But you can change it with arguments.
-      </p>
-      <h3 class="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-        Scripts List
-      </h3>
-      <p class="leading-7 [&:not(:first-child)]:mt-6">
-        To get a list of scripts, do $ curl https://s.origaming.ch/help | sh
-      </p>
+  <main class="p-8">
+    <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-rose-800">
+      OSXScripts
+    </h1>
+    <p class="leading-7 [&:not(:first-child)]:mt-6">
+      Welcome to this little repo of Mac scripts you can easily use in the terminal!
+    </p>
+    <h2 class="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+      How to use
+    </h2>
+    <p class="leading-7 [&:not(:first-child)]:mt-6">
+      To use these scripts, you will need to use
+    <span href="#" class="font-medium text-primary underline underline-offset-4">
+      curl and sh.
+    </span>
+    Here is an exemple:
+    </p>
+    <code class="border-l-2 pl-6 font-mono bg-neutral-300">
+        $ curl https://s.origaming.ch/finder | sh -s 10 5
+      </code>
+    <p class="leading-7 mt-2">
+      This will create 10 finder windows and delete them after 5 seconds. But you can change it with arguments.
+    </p>
+    <h3 class="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
+      Available scripts
+    </h3>
+    <p class="leading-7 [&:not(:first-child)]:mt-6">
+      To get a list of scripts, use this command:
+    </p>
+    <code class="border-l-2 pl-6 font-mono bg-neutral-300">
+      $ curl https://s.origaming.ch/help | sh
+    </code>
+  </main>
 </body>
 
 </html>

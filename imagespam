@@ -1,0 +1,151 @@
+#!/usr/bin/env osascript -l JavaScript
+ObjC.import('Cocoa');
+ObjC.import('WebKit');
+
+const app = $.NSApplication.sharedApplication;
+
+// Default values
+const defaultVideoURL = "https://haveibeenargused.com/kat.webm";
+const defaultWindowCount = 20;
+
+// Store the target start time
+let targetStartTime = new Date().getTime() + 1000; // 1 second from now
+
+function showHelp() {
+    console.log("Usage: script.js [VIDEO_URL] [NUMBER_OF_WINDOWS]");
+    console.log("    VIDEO_URL         The URL of the video to play (default: https://haveibeenargused.com/kat.webm)");
+    console.log("    NUMBER_OF_WINDOWS The number of video canvases to display (default: 20)");
+}
+
+function run(argv) {
+    if (argv.includes('--help')) {
+        showHelp();
+        app.quit; // Quit the app after showing help
+        return;
+    }
+
+    // Parse video URL and video element count
+    const videoURL = argv.length > 0 ? argv[0] : defaultVideoURL;
+    const videoCount = argv.length > 1 ? parseInt(argv[1], 10) : defaultWindowCount;
+
+    if (isNaN(videoCount)) {
+        console.log("Error: NUMBER_OF_WINDOWS must be an integer.");
+        showHelp();
+        app.quit; // Exit the script on error
+        return;
+    }
+
+    const screenFrame = $.NSScreen.mainScreen.frame;
+    const videoWidth = screenFrame.size.width / (videoCount === 1 ? 1 : Math.ceil(Math.sqrt(videoCount)));
+    const videoHeight = screenFrame.size.height / (videoCount === 1 ? 1 : Math.ceil(videoCount / Math.ceil(Math.sqrt(videoCount))));
+
+    // Create a single window that covers the entire screen
+    const window = $.NSWindow.alloc.initWithContentRectStyleMaskBackingDefer(
+        $.NSMakeRect(0, 0, screenFrame.size.width, screenFrame.size.height),
+        $.NSWindowStyleMaskBorderless,
+        $.NSBackingStoreBuffered,
+        false
+    );
+
+    // Make the window always on top
+    window.level = $.NSStatusWindowLevel;
+
+    const webView = $.WKWebView.alloc.initWithFrame($.NSMakeRect(0, 0, screenFrame.size.width, screenFrame.size.height));
+
+    // Generate HTML content with a single video element and multiple canvases
+    const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {
+                    margin: 0;
+                    overflow: hidden;
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                }
+                canvas {
+                    position: absolute;
+                    object-fit: fill;
+                }
+                ${Array.from({ length: videoCount }).map((_, i) => `
+                    .canvas-${i} {
+                        width: ${videoWidth}px;
+                        height: ${videoHeight}px;
+                        left: ${i % Math.ceil(Math.sqrt(videoCount)) * videoWidth}px;
+                        top: ${Math.floor(i / Math.ceil(Math.sqrt(videoCount))) * videoHeight}px;
+                    }
+                `).join('')}
+            </style>
+        </head>
+        <body>
+            <video id="mainVideo" src="${videoURL}" preload="auto" loop style="display: none;"></video>
+            ${Array.from({ length: videoCount }).map((_, i) => `
+                <canvas class="canvas-${i}" id="canvas-${i}"></canvas>
+            `).join('')}
+            <script>
+                function waitForSync(targetTime) {
+                    return new Promise(resolve => {
+                        function checkTime() {
+                            const now = new Date().getTime();
+                            if (now >= targetTime) {
+                                resolve();
+                            } else {
+                                setTimeout(checkTime, 10); // Check every 10ms
+                            }
+                        }
+                        checkTime();
+                    });
+                }
+
+                async function syncPlayback(targetTime) {
+                    await waitForSync(targetTime);
+
+                    const video = document.getElementById('mainVideo');
+                    const canvases = [];
+                    for (let i = 0; i < ${videoCount}; i++) {
+                        const canvas = document.getElementById('canvas-' + i);
+                        if (canvas) {
+                            canvases.push(canvas);
+                        }
+                    }
+
+                    // Set up the canvas contexts and draw the video
+                    const videoWidth = video.videoWidth;
+                    const videoHeight = video.videoHeight;
+
+                    canvases.forEach(canvas => {
+                        canvas.width = videoWidth;
+                        canvas.height = videoHeight;
+                    });
+
+                    function draw() {
+                        canvases.forEach(canvas => {
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+                        });
+                        requestAnimationFrame(draw);
+                    }
+
+                    video.currentTime = 0;
+                    video.play();
+                    draw();
+                }
+
+                syncPlayback(${targetStartTime});
+            </script>
+        </body>
+        </html>
+    `;
+
+    // Load HTML content directly
+    webView.loadHTMLStringBaseURL(htmlContent, undefined);
+
+    // Add WebView to the window
+    window.contentView.addSubview(webView);
+    window.makeKeyAndOrderFront(null);
+
+    app.run();
+}
