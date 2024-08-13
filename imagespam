@@ -1,6 +1,6 @@
 #!/bin/sh
 
-osascript -l JavaScript <<'EOF'
+osascript -l JavaScript <<EOF
 ObjC.import('Cocoa');
 ObjC.import('WebKit');
 
@@ -152,5 +152,7 @@ function run(argv) {
     app.run();
 }
 
-run(arguments);
+// Parse command line arguments
+const args = $.NSProcessInfo.processInfo.arguments;
+run(args.slice(1));
 EOF
